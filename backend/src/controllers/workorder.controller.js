@@ -3,14 +3,16 @@ const { WorkOrderModel, InventoryModel, UserModel } = require('../models');
 const createWorkOrder = (req, res) => {
   try {
     const { location_id, item_id, required_qty, assigned_user_id, notes } = req.body;
-    if (!location_id || !item_id || !required_qty || !assigned_user_id) {
-      return res.status(400).json({ success: false, message: 'location_id, item_id, required_qty, assigned_user_id are required' });
+    const finalAssignedUserId = assigned_user_id ? parseInt(assigned_user_id) : req.user.id;
+
+    if (!location_id || !item_id || !required_qty) {
+      return res.status(400).json({ success: false, message: 'location_id, item_id, and required_qty are required' });
     }
     if (parseFloat(required_qty) <= 0) {
       return res.status(400).json({ success: false, message: 'required_qty must be positive' });
     }
 
-    const assignedUser = UserModel.findById(parseInt(assigned_user_id));
+    const assignedUser = UserModel.findById(finalAssignedUserId);
     if (!assignedUser) return res.status(400).json({ success: false, message: 'Assigned user not found' });
 
     // Calculate shortage
@@ -26,7 +28,7 @@ const createWorkOrder = (req, res) => {
       required_qty: parseFloat(required_qty),
       available_at_location: availableAtLocation,
       shortage_qty: shortage,
-      assigned_user_id: parseInt(assigned_user_id),
+      assigned_user_id: finalAssignedUserId,
       notes,
       created_by: req.user.id,
     });

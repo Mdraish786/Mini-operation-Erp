@@ -188,7 +188,14 @@ Run the automated test suite with Jest:
 
 ```bash
 cd backend
-npm test:jest
+npm run test:jest
+```
+
+If you want to run only the work-order tests:
+
+```bash
+cd backend
+npx jest tests/order.test.js --runInBand --testNamePattern="Admin can create Work Order"
 ```
 
 ### Test Coverage:

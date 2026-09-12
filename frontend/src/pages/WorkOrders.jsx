@@ -9,7 +9,6 @@ export default function WorkOrders() {
   const [workOrders, setWorkOrders] = useState([]);
   const [items, setItems] = useState([]);
   const [locations, setLocations] = useState([]);
-  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -19,7 +18,7 @@ export default function WorkOrders() {
     location_id: '',
     item_id: '',
     required_qty: '',
-    assigned_user_id: '',
+    assigned_user_id: user?.id || '',
     notes: '',
   });
   const [stockCheck, setStockCheck] = useState({ available: 0, shortage: 0 });
@@ -40,19 +39,12 @@ export default function WorkOrders() {
 
   const fetchMetadata = async () => {
     try {
-      const [itRes, locRes, invRes] = await Promise.all([
+      const [itRes, locRes] = await Promise.all([
         api.get('/inventory/items'),
         api.get('/inventory/locations'),
-        api.get('/inventory'),
       ]);
       setItems(itRes.data.data);
       setLocations(locRes.data.data);
-      // Dummy users for assignment
-      setUsers([
-        { id: 1, name: 'Admin User', role: 'admin' },
-        { id: 2, name: 'Operations User', role: 'operations' },
-        { id: 3, name: 'Sales User', role: 'sales' },
-      ]);
     } catch (err) {
       console.error(err);
     }
@@ -106,11 +98,11 @@ export default function WorkOrders() {
         location_id: Number(formData.location_id),
         item_id: Number(formData.item_id),
         required_qty: parseFloat(formData.required_qty),
-        assigned_user_id: Number(formData.assigned_user_id),
+        assigned_user_id: Number(formData.assigned_user_id || user?.id),
         notes: formData.notes,
       });
       setShowModal(false);
-      setFormData({ location_id: '', item_id: '', required_qty: '', assigned_user_id: '', notes: '' });
+      setFormData({ location_id: '', item_id: '', required_qty: '', assigned_user_id: user?.id || '', notes: '' });
       setStockCheck({ available: 0, shortage: 0 });
       fetchWorkOrders();
     } catch (err) {
@@ -358,34 +350,18 @@ export default function WorkOrders() {
                 </select>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-600 uppercase mb-1">Required Quantity</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    min="0.01"
-                    required
-                    value={formData.required_qty}
-                    onChange={(e) => handleFieldChange('required_qty', e.target.value)}
-                    placeholder="e.g. 100"
-                    className="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-600 uppercase mb-1">Assign User</label>
-                  <select
-                    required
-                    value={formData.assigned_user_id}
-                    onChange={(e) => handleFieldChange('assigned_user_id', e.target.value)}
-                    className="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg"
-                  >
-                    <option value="">Assign To...</option>
-                    {users.map((u) => (
-                      <option key={u.id} value={u.id}>{u.name} ({u.role})</option>
-                    ))}
-                  </select>
-                </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-600 uppercase mb-1">Required Quantity</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  required
+                  value={formData.required_qty}
+                  onChange={(e) => handleFieldChange('required_qty', e.target.value)}
+                  placeholder="e.g. 100"
+                  className="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg"
+                />
               </div>
 
               {/* Automatic Stock Check Box */}

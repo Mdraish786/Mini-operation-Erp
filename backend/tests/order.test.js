@@ -99,6 +99,20 @@ describe('Test 5 — Unauthorized user cannot perform restricted operations', ()
     expect(res.statusCode).toBe(401);
   });
 
+  it('Admin can create Work Order without explicit assignee and defaults to current user', async () => {
+    const res = await request(app)
+      .post('/api/work-orders')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        location_id: seededData.locA.id,
+        item_id: seededData.item.id,
+        required_qty: 10,
+      });
+    expect(res.statusCode).toBe(201);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.assigned_user_id).toBe(seededData.admin.id);
+  });
+
   it('Admin can create Work Order successfully', async () => {
     const res = await request(app)
       .post('/api/work-orders')
