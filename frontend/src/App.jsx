@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Navbar from './components/Navbar';
+import RoleBanner from './components/RoleBanner';
 import Login from './pages/Login';
 import Inventory from './pages/Inventory';
 import WorkOrders from './pages/WorkOrders';
@@ -13,7 +14,12 @@ function AppLayout({ children }) {
   const { isAuthenticated } = useAuth();
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
-      {isAuthenticated && <Navbar />}
+      {isAuthenticated && (
+        <>
+          <Navbar />
+          <RoleBanner />
+        </>
+      )}
       <main className="flex-1">{children}</main>
     </div>
   );
@@ -63,7 +69,7 @@ export default function App() {
               }
             />
 
-            {/* Default redirect */}
+            {/* Default redirect based on user is handled cleanly */}
             <Route path="/" element={<Navigate to="/inventory" replace />} />
             <Route path="*" element={<Navigate to="/inventory" replace />} />
           </Routes>

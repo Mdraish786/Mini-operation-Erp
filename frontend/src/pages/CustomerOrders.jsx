@@ -128,15 +128,46 @@ export default function CustomerOrders() {
             Sales orders with atomic, concurrency-safe inventory reservation preventing overselling
           </p>
         </div>
-        {canCreateOrder && (
+        {canCreateOrder ? (
           <button
             onClick={() => setShowModal(true)}
-            className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-sm transition"
+            className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg shadow-sm transition"
           >
             + New Customer Order
           </button>
+        ) : (
+          <span className="mt-4 sm:mt-0 inline-flex items-center px-3 py-1.5 bg-slate-100 text-slate-600 text-xs font-semibold rounded-lg border border-slate-200">
+            🔒 Order Creation Restricted to Sales/Admin
+          </span>
         )}
       </div>
+
+      {/* Role Context Notification */}
+      {user?.role === 'operations' && (
+        <div className="mb-6 p-3.5 bg-amber-50/90 border border-amber-200 rounded-xl text-xs text-amber-950 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[11px] uppercase">
+              Operations Notice (Restricted)
+            </span>
+            <span>
+              Customer sales orders and inventory reservations are handled exclusively by <strong>Sales Representatives</strong>. Operations cannot initiate client orders.
+            </span>
+          </div>
+        </div>
+      )}
+
+      {user?.role === 'sales' && (
+        <div className="mb-6 p-3.5 bg-emerald-50/80 border border-emerald-200 rounded-xl text-xs text-emerald-950 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[11px] uppercase">
+              Sales Authority
+            </span>
+            <span>
+              You have primary commercial authority: Place customer orders, atomically reserve inventory against available stock, or release reserved stock upon cancellation.
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Concurrency Banner */}
       <div className="bg-emerald-50/70 border border-emerald-200 rounded-xl p-4 mb-6 text-xs text-emerald-950 flex flex-col md:flex-row md:items-center justify-between gap-3">

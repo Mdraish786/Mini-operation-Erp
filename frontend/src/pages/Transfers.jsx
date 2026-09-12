@@ -137,15 +137,46 @@ export default function Transfers() {
             Inter-warehouse material transfers with two-stage transactional dispatch and receipt verification
           </p>
         </div>
-        {canManageTransfers && (
+        {canManageTransfers ? (
           <button
             onClick={() => setShowModal(true)}
-            className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-sm transition"
+            className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow-sm transition"
           >
             + Request Transfer
           </button>
+        ) : (
+          <span className="mt-4 sm:mt-0 inline-flex items-center px-3 py-1.5 bg-slate-100 text-slate-600 text-xs font-semibold rounded-lg border border-slate-200">
+            🔒 Transfers Restricted to Ops/Admin
+          </span>
         )}
       </div>
+
+      {/* Role Context Notification */}
+      {user?.role === 'sales' && (
+        <div className="mb-6 p-3.5 bg-amber-50/90 border border-amber-200 rounded-xl text-xs text-amber-950 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[11px] uppercase">
+              Sales Notice (Restricted)
+            </span>
+            <span>
+              Inter-warehouse logistics transfers are restricted to <strong>Operations</strong>. Sales representatives cannot initiate or receive truck transfers.
+            </span>
+          </div>
+        </div>
+      )}
+
+      {user?.role === 'operations' && (
+        <div className="mb-6 p-3.5 bg-blue-50/80 border border-blue-200 rounded-xl text-xs text-blue-950 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-[11px] uppercase">
+              Operations Authority
+            </span>
+            <span>
+              You have primary logistics control: Request inter-warehouse transfers, execute physical <strong>Dispatch</strong> (reduces source stock), and <strong>Confirm Receipt</strong> (increases destination stock).
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Workflow Explainer Banner */}
       <div className="bg-indigo-50/70 border border-indigo-100 rounded-xl p-4 mb-6 text-xs text-indigo-950 flex flex-col md:flex-row md:items-center justify-between gap-3">

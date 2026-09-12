@@ -142,15 +142,46 @@ export default function WorkOrders() {
             Manufacturing & production orders with automatic material stock check and shortage calculation
           </p>
         </div>
-        {isAdmin && (
+        {isAdmin ? (
           <button
             onClick={() => setShowModal(true)}
-            className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-sm transition"
+            className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold rounded-lg shadow-sm transition"
           >
             + New Work Order
           </button>
+        ) : (
+          <span className="mt-4 sm:mt-0 inline-flex items-center px-3 py-1.5 bg-slate-100 text-slate-600 text-xs font-semibold rounded-lg border border-slate-200">
+            🔒 Creation Restricted to Admin
+          </span>
         )}
       </div>
+
+      {/* Role Context Notification */}
+      {user?.role === 'sales' && (
+        <div className="mb-6 p-3.5 bg-amber-50/90 border border-amber-200 rounded-xl text-xs text-amber-950 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[11px] uppercase">
+              Sales Notice (Restricted)
+            </span>
+            <span>
+              Production Work Orders are governed exclusively by <strong>Admin</strong> (Order Creation) and <strong>Operations</strong> (Manufacturing Fulfillment). Sales cannot draft factory work orders.
+            </span>
+          </div>
+        </div>
+      )}
+
+      {user?.role === 'operations' && (
+        <div className="mb-6 p-3.5 bg-blue-50/80 border border-blue-200 rounded-xl text-xs text-blue-950 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-[11px] uppercase">
+              Operations Execution Role
+            </span>
+            <span>
+              You are assigned to monitor production orders, advance statuses (<strong>Start / Complete</strong>), and trigger <strong>Inter-Warehouse Transfers</strong> for detected shortages.
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

@@ -113,15 +113,46 @@ export default function Inventory() {
             Real-time multi-location physical, reserved, and available stock levels
           </p>
         </div>
-        {canAddStock && (
+        {canAddStock ? (
           <button
             onClick={() => setShowAddModal(true)}
             className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-sm transition"
           >
             + Add Stock
           </button>
+        ) : (
+          <span className="mt-4 sm:mt-0 inline-flex items-center px-3 py-1.5 bg-slate-100 text-slate-600 text-xs font-semibold rounded-lg border border-slate-200">
+            🔒 Stock Adjustment Restricted to Ops/Admin
+          </span>
         )}
       </div>
+
+      {/* Role Context Notification */}
+      {user?.role === 'sales' && (
+        <div className="mb-6 p-3.5 bg-emerald-50/80 border border-emerald-200 rounded-xl text-xs text-emerald-950 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[11px] uppercase">
+              Sales View
+            </span>
+            <span>
+              You have read-only visibility to verify <strong>Available Stock</strong> before placing Customer Orders. Physical stock modifications are restricted to Operations.
+            </span>
+          </div>
+        </div>
+      )}
+
+      {user?.role === 'operations' && (
+        <div className="mb-6 p-3.5 bg-blue-50/80 border border-blue-200 rounded-xl text-xs text-blue-950 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-[11px] uppercase">
+              Operations Authority
+            </span>
+            <span>
+              You have full stock management privileges. Use <strong>+ Add Stock</strong> to record incoming inventory batches and physical adjustments.
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Filters & KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
